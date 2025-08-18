@@ -1,0 +1,58 @@
+## Ignore Visual Studio temporary files, build results, and user-specific files
+
+# Visual Studio
+.vs/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# Build results
+bin/
+obj/
+out/
+
+# Rider
+.idea/
+
+# ASP.NET temporary files
+*.log
+*.vsix
+*.nupkg
+*.zip
+
+# ASP.NET runtime files
+*.dbmdl
+*.pdb
+*.cache
+*.dll
+*.exe
+*.app
+*.webtest
+
+# NuGet packages
+*.nupkg
+# The packages folder can be ignored because of Package Restore
+**/packages/*
+# Except build/, which is used by projects
+!**/packages/build/
+!**/packages/repositories.config
+
+# ASP.NET Core publishes
+publish/
+*.Publish.xml
+
+# JetBrains Rider
+.idea/
+*.sln.iml
+
+# User-specific files
+*.rsuser
+*.suo
+*.user
+*.userprefs
+
+# Others
+*.DS_Store
+*.swp
+Thumbs.db
