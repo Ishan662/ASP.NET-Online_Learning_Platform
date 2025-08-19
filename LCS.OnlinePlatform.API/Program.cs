@@ -1,3 +1,8 @@
+using LCS.OnlinePlatform.Data;
+using LCS.OnlinePlatform.Data.Entities;
+using Microsoft.EntityFrameworkCore;
+using LCS.OnlinePlatform.Service;
+
 
 namespace LCS.OnlinePlatform.API
 {
@@ -6,17 +11,35 @@ namespace LCS.OnlinePlatform.API
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
+            var configuration = builder.Configuration;
 
-            // Add services to the container.
+            builder.Services.AddDbContextPool<OnlinePlatformDbContext>(options =>
+            {
+                options.UseSqlServer(
+                    configuration.GetConnectionString("DbContext"),
+                    providerOptions => providerOptions.EnableRetryOnFailure());
+
+                options.EnableSensitiveDataLogging();
+            });
+
+
 
             builder.Services.AddControllers();
-            // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-            builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
+
+            builder.Services.AddScoped<ICourseCategoryRepository, CourseCategoryRepository>();
+            builder.Services.AddScoped<ICourseCategoryService, CourseCategoryService>();
+
 
             var app = builder.Build();
 
-            // Configure the HTTP request pipeline.
+            // Ensure the database is created
+            using (var scope = app.Services.CreateScope())
+            {
+                var db = scope.ServiceProvider.GetRequiredService<OnlinePlatformDbContext>();
+                db.Database.EnsureCreated(); // <-- This will create the database if it doesn't exist
+            }
+
             if (app.Environment.IsDevelopment())
             {
                 app.UseSwagger();
@@ -24,12 +47,8 @@ namespace LCS.OnlinePlatform.API
             }
 
             app.UseHttpsRedirection();
-
             app.UseAuthorization();
-
-
             app.MapControllers();
-
             app.Run();
         }
     }
