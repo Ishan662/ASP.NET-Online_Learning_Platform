@@ -1,0 +1,6 @@
+@LCS.OnlinePlatform.API_HostAddress = http://localhost:5038
+
+GET {{LCS.OnlinePlatform.API_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
