@@ -2,6 +2,7 @@ using LCS.OnlinePlatform.Data;
 using LCS.OnlinePlatform.Data.Entities;
 using Microsoft.EntityFrameworkCore;
 using LCS.OnlinePlatform.Service;
+using Microsoft.AspNetCore.Cors;
 
 
 namespace LCS.OnlinePlatform.API
@@ -29,16 +30,33 @@ namespace LCS.OnlinePlatform.API
 
             builder.Services.AddScoped<ICourseCategoryRepository, CourseCategoryRepository>();
             builder.Services.AddScoped<ICourseCategoryService, CourseCategoryService>();
+            builder.Services.AddScoped<ICourseRepository, CourseRepository>();
+            builder.Services.AddScoped<ICourseService, CourseService>();
+            builder.Services.AddCors(options =>
+            {
+                options.AddPolicy("AllowAngularApp",
+                    builder =>
+                    {
+                        builder.WithOrigins("http://localhost:4200") // Angular dev server
+                              .AllowAnyHeader()
+                              .AllowAnyMethod();
+                    });
+            });
+
 
 
             var app = builder.Build();
+            app.UseCors("AllowAngularApp");
 
             // Ensure the database is created
             using (var scope = app.Services.CreateScope())
             {
-                var db = scope.ServiceProvider.GetRequiredService<OnlinePlatformDbContext>();
-                db.Database.EnsureCreated(); // <-- This will create the database if it doesn't exist
+                var db = scope.ServiceProvider.GetRequiredService<OnlinePlatformDbContext>();// <-- This will create the database if it doesn't exist
             }
+
+
+
+
 
             if (app.Environment.IsDevelopment())
             {
